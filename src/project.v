@@ -16,29 +16,22 @@ module tt_um_8_bit_counter (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-  
-  wire load_en = ui_in[0];
-  wire count_en = ui_in[1];
+  wire load_en   = ui_in[0];
+  wire count_en  = ui_in[1];
   wire output_en = ui_in[2];
 
-  reg[7:0] counter_reg;
+  reg [7:0] counter_reg;
 
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       counter_reg <= 8'd0;
-
     end else begin
       if (load_en) begin
-        counter_reg <= uio_in;
-
-      end else begin
-        if (counter_reg == 8'hFF) begin 
-          counter_reg <= 8'h00;
-        end else begin
-          counter_reg <= counter_reg + 1'b1;
-        end
-
+        counter_reg <= uio_in;            // Load takes highest priority
+      end else if (count_en) begin
+        counter_reg <= counter_reg + 1'b1; // Count only when count_en is high
       end
+      // Implicit else: retain current value when count_en is low
     end
   end
 
