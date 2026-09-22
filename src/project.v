@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_8_bit_counter (
+module tt_um_8_bit_counter (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -25,20 +25,24 @@ module tt_8_bit_counter (
 
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-      counter_reg <= 8'd0
+      counter_reg <= 8'd0;
 
     end else begin
       if (load_en) begin
         counter_reg <= uio_in;
 
       end else begin
-        counter_reg <= counter_reg + 1'b1;
+        if (counter_reg == 8'hFF) begin 
+          counter_reg <= 8'h00;
+        end else begin
+          counter_reg <= counter_reg + 1'b1;
+        end
 
       end
     end
   end
 
-  assign uio_oe  = oe ? 8'hFF : 8'h00;
+  assign uio_oe  = output_en ? 8'hFF : 8'h00;
   assign uio_out = counter_reg;
   assign uo_out  = counter_reg;
 
