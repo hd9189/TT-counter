@@ -75,6 +75,6 @@ make -B
 
 # Run gate-level simulation (after hardening)
 make -B GATES=yes
-
+```
 
 ![Simulation Waveform](test/image.png)
